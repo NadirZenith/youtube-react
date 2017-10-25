@@ -59,16 +59,15 @@ class App extends Component<void, State> {
                 const videos = response.data.items
                 // .filter(v => v.id.kind === type)
                     .map(v => {
-                        // console.log(v)
-                        return {
+                            // console.log(v)
+                            return {
                                 id: v.id.videoId || v.id.channelId || v.id.playlistId,
                                 title: v.snippet.title,
                                 type: type,
-                                image: v.snippet.thumbnails ?  (v.snippet.thumbnails.medium || v.snippet.thumbnails.default) : ''
+                                image: v.snippet.thumbnails ? (v.snippet.thumbnails.medium || v.snippet.thumbnails.default) : 'http://via.placeholder.com/120x90'
                             }
-                    }
-
-            )
+                        }
+                    )
 
                 console.log(`Displaying ${videos.length} videos`)
 

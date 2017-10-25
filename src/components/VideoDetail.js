@@ -76,7 +76,8 @@ class VideoDetail extends Component<ContextRouter, State> {
 
         return (
             <div className="video-detail">
-                <a href="#">back</a>
+                <a href="" onClick={this.props.history.goBack}>&larr; Go Back</a>
+
                 <iframe title="video" src={`https://www.youtube.com/embed/` + this.props.match.params.id}
                         frameBorder="0" allowFullScreen/>
                 <div>{loadingOrData}</div>
