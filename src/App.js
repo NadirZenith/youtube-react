@@ -9,7 +9,7 @@ import type {Video} from './components/types'
 import MenuBar from './components/Menu/MenuBar'
 import axios from 'axios'
 import apiKey from './youtube-api-key.json'
-import {YT_TYPE_VIDEO, YT_TYPE_CHANNEL} from './Config'
+import {YT_TYPE_VIDEO} from './Config'
 
 type State = {
     videos: Array<Video>,
@@ -24,11 +24,15 @@ class App extends Component<void, State> {
 
         this.state = {
             videos: [],
-            loading: false,
-            filter: {
-                video_type: YT_TYPE_VIDEO
-            },
+            loading: false
+            // filter: {
+            //     video_type: YT_TYPE_VIDEO
+            // },
         }
+    }
+
+    componentDidMount() {
+        this.searchVideos('', YT_TYPE_VIDEO)
     }
 
     /** Searches videos using state.searchTerm */
@@ -39,23 +43,32 @@ class App extends Component<void, State> {
             return
         }
 
+        // type = type.substring(0, type.indexOf("#")); // before char
+        // type = type.substring(type.indexOf("#") + 1) // after char
+
         console.log("Searching videos: " + searchTerm + " of type: " + type)
-        this.setState({loading: true, searchTerm: searchTerm})
+        this.setState({loading: true})
 
         const searchApi = "https://www.googleapis.com/youtube/v3/search"
         const queryTerm = encodeURIComponent(searchTerm)
-        const url = searchApi + "?q=" + queryTerm + "&key=" + apiKey + "&maxResults=50&part=snippet"
+        const url = searchApi + "?q=" + queryTerm + "&key=" + apiKey + "&maxResults=50&part=snippet&order=date&type=" + type
 
         axios.get(url)
             .then((response) => {
 
                 const videos = response.data.items
-                    .filter(v => v.id.kind === type)
-                    .map(v => ({
-                        id: v.id.videoId,
-                        title: v.snippet.title,
-                        image: v.snippet.thumbnails.medium
-                    }))
+                // .filter(v => v.id.kind === type)
+                    .map(v => {
+                        // console.log(v)
+                        return {
+                                id: v.id.videoId || v.id.channelId || v.id.playlistId,
+                                title: v.snippet.title,
+                                type: type,
+                                image: v.snippet.thumbnails ?  (v.snippet.thumbnails.medium || v.snippet.thumbnails.default) : ''
+                            }
+                    }
+
+            )
 
                 console.log(`Displaying ${videos.length} videos`)
 
@@ -89,7 +102,9 @@ class App extends Component<void, State> {
                                 <VideoList videos={this.state.videos} loading={this.state.loading}/>
                             )}/>
 
-                            <Route path='/detail/:id' component={VideoPlayer}/>
+                            <Route path='/:type/:id' component={VideoPlayer}/>
+                            {/*<Route path='/playlist/:id' component={VideoPlayer}/>*/}
+                            {/*<Route path='/channel/:id' component={VideoPlayer}/>*/}
 
                             <Redirect from="*" to="/"/>
                             {/* remove the Redirect to display the "not found" route */}

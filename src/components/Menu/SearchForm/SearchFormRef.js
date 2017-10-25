@@ -2,7 +2,7 @@
 
 import React, {Component} from 'react'
 import './SearchForm.css'
-import {YT_TYPE_VIDEO, YT_TYPE_CHANNEL} from './../../../Config'
+import {YT_TYPE_VIDEO, YT_TYPE_CHANNEL, YT_TYPE_PLAYLIST} from './../../../Config'
 
 
 type Props = {
@@ -59,6 +59,11 @@ class SearchFormRef extends Component<Props, void> {
                         <input type="radio" name="filter_video_type" value={YT_TYPE_CHANNEL}
                                onChange={(e: Event) => this.sendValue()}
                         />channel
+                    </label>
+                    <label>
+                        <input type="radio" name="filter_video_type" value={YT_TYPE_PLAYLIST}
+                               onChange={(e: Event) => this.sendValue()}
+                        />playlist
                     </label>
                 </div>
                 <button>Search</button>

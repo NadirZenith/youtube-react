@@ -6,6 +6,7 @@ import type {Video} from './types'
 import axios from 'axios'
 import apiKey from './../youtube-api-key.json'
 import './VideoDetail.css'
+import {YT_TYPE_PLAYLIST, YT_TYPE_VIDEO} from "../Config";
 
 type State = {
     video: Video,
@@ -28,7 +29,15 @@ class VideoDetail extends Component<ContextRouter, State> {
     loadVideo(videoId: string) {
 
         const videosApi = "https://www.googleapis.com/youtube/v3/videos"
-        const url = videosApi + "?id=" + videoId + "&part=snippet&key=" + apiKey
+        var url = videosApi + "?id=" + videoId + "&part=snippet&key=" + apiKey
+        if (YT_TYPE_PLAYLIST === this.props.match.params.type) {
+            const playlistsApi = "https://www.googleapis.com/youtube/v3/playlists"
+            url = playlistsApi + "?id=" + videoId + "&part=snippet&key=" + apiKey
+
+        } else {
+            alert('Error: Videos type: ' + this.props.match.params.type + ' not implemented')
+            // return
+        }
 
         axios.get(url)
             .then((response) => {
@@ -67,6 +76,7 @@ class VideoDetail extends Component<ContextRouter, State> {
 
         return (
             <div className="video-detail">
+                <a href="#">back</a>
                 <iframe title="video" src={`https://www.youtube.com/embed/` + this.props.match.params.id}
                         frameBorder="0" allowFullScreen/>
                 <div>{loadingOrData}</div>
