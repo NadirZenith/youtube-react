@@ -1,15 +1,15 @@
 
 .video-detail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .video-detail iframe {
-  width: 560px;
-  height: 315px;
+    width: 560px;
+    height: 315px;
 }
 
 .video-detail div {
-  width: 560px;
+    width: 560px;
 }

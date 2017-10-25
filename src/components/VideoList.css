@@ -1,16 +1,23 @@
 
 .video-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 1050px;
 }
 
 .video-list .item {
-  width: 320px;
-  margin-bottom: 20px;
+    width: 320px;
+    margin-bottom: 20px;
+    margin-left: 20px;
 }
 
 .video-list a {
-  text-decoration: none;
-  color: #222;
+    text-decoration: none;
+    color: #222;
+}
+
+.video-list .item .video-title {
+    min-height: 50px;
 }

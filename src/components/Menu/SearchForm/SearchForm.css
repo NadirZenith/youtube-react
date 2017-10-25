@@ -1,0 +1,13 @@
+
+.search-form {
+    display: flex;
+    flex-direction: row;
+}
+
+.search-form input {
+    flex-grow: 1;
+}
+
+.search-form .filter_video_type {
+    margin: 5px 15px;
+}
