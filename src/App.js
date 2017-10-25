@@ -4,7 +4,8 @@ import React, {Component} from 'react'
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import type {ContextRouter} from 'react-router-dom'
 import VideoList from './components/VideoList'
-import VideoPlayer from './components/VideoDetail'
+// import VideoPlayer from './components/VideoDetail'
+import MediaPlayer from './components/MediaPlayer'
 import type {Video} from './components/types'
 import MenuBar from './components/Menu/MenuBar'
 import axios from 'axios'
@@ -21,22 +22,22 @@ class App extends Component<void, State> {
 
     constructor(props: void) {
         super(props)
-
+console.log(props)
         this.state = {
             videos: [],
-            loading: false
-            // filter: {
-            //     video_type: YT_TYPE_VIDEO
-            // },
+            loading: false,
+            filter: {
+                searchTerm: ''
+            },
         }
     }
 
     componentDidMount() {
-        this.searchVideos('', YT_TYPE_VIDEO)
+        this.searchMedias('', YT_TYPE_VIDEO)
     }
 
     /** Searches videos using state.searchTerm */
-    searchVideos(searchTerm: string, type: string) {
+    searchMedias(searchTerm: string, type: string) {
 
         if (apiKey.indexOf("get your Youtube API key") >= 0) {
             alert("Put a Youtube API key in youtube-api-key.json")
@@ -71,7 +72,7 @@ class App extends Component<void, State> {
 
                 console.log(`Displaying ${videos.length} videos`)
 
-                this.setState({videos: videos, loading: false})
+                this.setState({videos: videos, loading: false, filter: {searchTerm: searchTerm}})
 
             })
             .catch((error) => {
@@ -89,23 +90,21 @@ class App extends Component<void, State> {
                         <Route render={(props: ContextRouter) => (
                             <MenuBar
                                 onSearch={(value: string, type: string) => {
-                                    this.searchVideos(value, type)
-                                    props.history.push('/')
+                                    this.searchMedias(value, type)
+                                    props.history.push('/' + type)
                                 }}
                             />
                         )}/>
 
                         <Switch>
 
-                            <Route exact path='/' render={() => (
+                            <Route exact path='/:type?' render={() => (
                                 <VideoList videos={this.state.videos} loading={this.state.loading}/>
                             )}/>
 
-                            <Route path='/:type/:id' component={VideoPlayer}/>
-                            {/*<Route path='/playlist/:id' component={VideoPlayer}/>*/}
-                            {/*<Route path='/channel/:id' component={VideoPlayer}/>*/}
+                            <Route path='/:type/:id' component={MediaPlayer}/>
 
-                            <Redirect from="*" to="/"/>
+                            <Redirect from="*" to="/video"/>
                             {/* remove the Redirect to display the "not found" route */}
                             <Route component={() => <h1>Page not found, sorry!</h1>}/>
 

@@ -3,6 +3,7 @@
 import React, {Component} from 'react'
 import './SearchForm.css'
 import {YT_TYPE_VIDEO, YT_TYPE_CHANNEL, YT_TYPE_PLAYLIST} from './../../../Config'
+import type {ContextRouter} from 'react-router-dom'
 
 
 type Props = {
@@ -16,11 +17,14 @@ type Props = {
  *
  * This class uses refs to get the form fields (just aninput here)
  */
-class SearchFormRef extends Component<Props, void> {
+class SearchFormRef extends Component<ContextRouter, Props> {
+// class SearchFormRef extends Component<Props, void> {
+// class VideoDetail extends Component<ContextRouter, State> {
 
     form: ?HTMLFormElement
 
-    constructor(props: Props) {
+    constructor(props: ContextRouter) {
+    // constructor(props: Props) {
         super(props)
 
         // this.form = null // This is not necessary
@@ -53,17 +57,18 @@ class SearchFormRef extends Component<Props, void> {
                     <label>
                         <input type="radio" name="filter_video_type" value={YT_TYPE_VIDEO}
                                onChange={(e: Event) => this.sendValue()}
-                               defaultChecked/>video
-                    </label>
+                               defaultChecked
+                        />video
+                    </label><br/>
+                    <label>
+                        <input type="radio" name="filter_video_type" value={YT_TYPE_PLAYLIST}
+                               onChange={(e: Event) => this.sendValue()}
+                        />playlists
+                    </label><br/>
                     <label>
                         <input type="radio" name="filter_video_type" value={YT_TYPE_CHANNEL}
                                onChange={(e: Event) => this.sendValue()}
                         />channel
-                    </label>
-                    <label>
-                        <input type="radio" name="filter_video_type" value={YT_TYPE_PLAYLIST}
-                               onChange={(e: Event) => this.sendValue()}
-                        />playlist
                     </label>
                 </div>
                 <button>Search</button>
