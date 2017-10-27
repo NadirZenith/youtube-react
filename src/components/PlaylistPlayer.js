@@ -6,12 +6,13 @@ import type {Video} from './types'
 import axios from 'axios'
 import apiKey from './../youtube-api-key.json'
 import './VideoDetail.css'
+import {YT_TYPE_PLAYLIST, YT_TYPE_VIDEO} from "../Config";
 
 type State = {
     video: Video
 };
 
-class VideoPlayer extends Component<ContextRouter, State> {
+class PlaylistPlayer extends Component<ContextRouter, State> {
 
     constructor(props: ContextRouter) {
         super(props)
@@ -20,12 +21,13 @@ class VideoPlayer extends Component<ContextRouter, State> {
             video: null,
         }
 
-        this.loadVideo(props.id)
+        this.loadPlaylist(props.id)
+
     }
 
-    loadVideo(videoId: string) {
+    loadPlaylist(videoId: string) {
 
-        let videosApi = "https://www.googleapis.com/youtube/v3/videos"
+        let videosApi = "https://www.googleapis.com/youtube/v3/playlists"
         let url = videosApi + "?id=" + videoId + "&part=snippet&key=" + apiKey
 
         axios.get(url)
@@ -56,7 +58,7 @@ class VideoPlayer extends Component<ContextRouter, State> {
 
         return (
             <div>
-                <iframe title="video" src={`https://www.youtube.com/embed/` + this.state.video.id}
+                <iframe title="video" src={`https://www.youtube.com/embed/?listType=playlist&list=` + this.state.video.id}
                         frameBorder="0" allowFullScreen/>
 
                 <h2>{this.state.video.title}</h2>
@@ -66,9 +68,10 @@ class VideoPlayer extends Component<ContextRouter, State> {
     }
 }
 
+
 // TODO: improve, maybe using https://www.npmjs.com/package/react-linkify
 function linkify(text) {
     return text.replace(/((http|https):[^\s]+)/g, "<a target='_blank' href=\"$1\">$1</a>")
 }
 
-export default VideoPlayer
+export default PlaylistPlayer

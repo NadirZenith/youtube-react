@@ -1,15 +1,15 @@
 
-.video-detail {
+.media-detail {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.video-detail iframe {
+.media-detail iframe {
     width: 560px;
     height: 315px;
 }
 
-.video-detail div {
+.media-detail div {
     width: 560px;
 }

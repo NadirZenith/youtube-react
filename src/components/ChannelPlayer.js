@@ -11,7 +11,7 @@ type State = {
     video: Video
 };
 
-class VideoPlayer extends Component<ContextRouter, State> {
+class ChannelPlayer extends Component<ContextRouter, State> {
 
     constructor(props: ContextRouter) {
         super(props)
@@ -20,13 +20,13 @@ class VideoPlayer extends Component<ContextRouter, State> {
             video: null,
         }
 
-        this.loadVideo(props.id)
+        this.loadChannel(props.id)
     }
 
-    loadVideo(videoId: string) {
+    loadChannel(videoId: string) {
 
-        let videosApi = "https://www.googleapis.com/youtube/v3/videos"
-        let url = videosApi + "?id=" + videoId + "&part=snippet&key=" + apiKey
+        let videosApi = "https://www.googleapis.com/youtube/v3/channels"
+        let url = videosApi + "?id=" + videoId + "&part=snippet,contentDetails&key=" + apiKey
 
         axios.get(url)
             .then((response) => {
@@ -36,6 +36,7 @@ class VideoPlayer extends Component<ContextRouter, State> {
                     const v = items[0]
                     const video = {
                         id: v.id,
+                        playlistId: v.contentDetails.relatedPlaylists.uploads,
                         title: v.snippet.title,
                         description: v.snippet.description,
                         image: v.snippet.thumbnails.medium
@@ -50,13 +51,16 @@ class VideoPlayer extends Component<ContextRouter, State> {
 
     render() {
 
-        if(!this.state.video){
+        if (!this.state.video) {
             return null
         }
 
         return (
             <div>
-                <iframe title="video" src={`https://www.youtube.com/embed/` + this.state.video.id}
+                {/*<iframe src="http://www.youtube.com/embed/?listType=user_uploads&list=YOURCHANNELNAME" width="480" height="400"></iframe>*/}
+                {/*<iframe title="video" src={`https://www.youtube.com/embed/?listType=user_uploads&list=` + this.state.video.playlistId}*/}
+                <iframe title="video"
+                        src={`https://www.youtube.com/embed/?listType=playlist&list=` + this.state.video.playlistId}
                         frameBorder="0" allowFullScreen/>
 
                 <h2>{this.state.video.title}</h2>
@@ -66,9 +70,10 @@ class VideoPlayer extends Component<ContextRouter, State> {
     }
 }
 
+
 // TODO: improve, maybe using https://www.npmjs.com/package/react-linkify
 function linkify(text) {
     return text.replace(/((http|https):[^\s]+)/g, "<a target='_blank' href=\"$1\">$1</a>")
 }
 
-export default VideoPlayer
+export default ChannelPlayer

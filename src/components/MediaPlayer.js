@@ -2,15 +2,13 @@
 
 import React, {Component} from 'react'
 import type {ContextRouter} from 'react-router-dom'
-import type {Video} from './types'
-import axios from 'axios'
-import apiKey from './../youtube-api-key.json'
 import './VideoDetail.css'
 import {YT_TYPE_PLAYLIST, YT_TYPE_VIDEO} from "../Config";
 import VideoPlayer from "./VideoPlayer";
+import PlaylistPlayer from "./PlaylistPlayer";
+import ChannelPlayer from "./ChannelPlayer";
 
 type State = {
-    video: Video,
     loading: boolean
 };
 
@@ -19,58 +17,43 @@ class MediaPlayer extends Component<ContextRouter, State> {
     constructor(props: ContextRouter) {
         super(props)
 
-        console.log(props)
         this.state = {
-            type: this.props.match.params.type,
-            id: this.props.match.params.id,
             loading: true
         }
+    }
 
-        // this.loadVideo(this.props.match.params.id)
+    componentDidMount() {
+        this.setState({loading: false})
     }
 
     render() {
-
-        let loadingOrData;
+        let player;
 
         if (this.state.loading) {
-            loadingOrData = "loading data..."
+            player = "loading data..."
         } else {
-            loadingOrData = (
-                <div>
-                    <h2>{this.state.video.title}</h2>
-                    <p dangerouslySetInnerHTML={{__html: linkify(this.state.video.description)}}/>
-                </div>
-            )
+
+            if (this.props.type === YT_TYPE_VIDEO) {
+                player = ( <VideoPlayer id={this.props.id}/> )
+
+            } else if (this.props.type === YT_TYPE_PLAYLIST) {
+                player = ( <PlaylistPlayer id={this.props.id}/> )
+
+            } else {
+                // console.log('implementing')
+                // return null
+                player = ( <ChannelPlayer id={this.props.id}/> )
+
+            }
         }
-        let player;
-            console.log(this)
-        if (this.state.type === YT_TYPE_VIDEO){
-            player = (
-                <VideoPlayer id={this.state.id} />
-            )
-                {/*<iframe title="video" src={`https://www.youtube.com/embed/` + this.props.match.params.id}*/}
-                        {/*frameBorder="0" allowFullScreen/>*/}
-        } else{
-            alert('hi')
-        }
-        {/*<VideoPlayer/>*/}
-        // if(this.p)
 
         return (
-            <div className="video-detail">
+            <div className="media-detail">
                 <a href="" onClick={this.props.history.goBack}>&larr; Go Back</a>
                 {player}
-
-                <div>{loadingOrData}</div>
             </div>
         )
     }
-}
-
-// TODO: improve, maybe using https://www.npmjs.com/package/react-linkify
-function linkify(text) {
-    return text.replace(/((http|https):[^\s]+)/g, "<a target='_blank' href=\"$1\">$1</a>")
 }
 
 export default MediaPlayer

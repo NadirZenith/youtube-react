@@ -4,7 +4,6 @@ import React, {Component} from 'react'
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import type {ContextRouter} from 'react-router-dom'
 import VideoList from './components/VideoList'
-// import VideoPlayer from './components/VideoDetail'
 import MediaPlayer from './components/MediaPlayer'
 import type {Video} from './components/types'
 import MenuBar from './components/Menu/MenuBar'
@@ -22,7 +21,7 @@ class App extends Component<void, State> {
 
     constructor(props: void) {
         super(props)
-console.log(props)
+
         this.state = {
             videos: [],
             loading: false,
@@ -60,7 +59,6 @@ console.log(props)
                 const videos = response.data.items
                 // .filter(v => v.id.kind === type)
                     .map(v => {
-                            // console.log(v)
                             return {
                                 id: v.id.videoId || v.id.channelId || v.id.playlistId,
                                 title: v.snippet.title,
@@ -99,10 +97,22 @@ console.log(props)
                         <Switch>
 
                             <Route exact path='/:type?' render={() => (
-                                <VideoList videos={this.state.videos} loading={this.state.loading}/>
+                                <VideoList
+                                    videos={this.state.videos}
+                                    loading={this.state.loading}
+                                />
                             )}/>
 
-                            <Route path='/:type/:id' component={MediaPlayer}/>
+                            <Route exact path='/:type/:id' render={(props: ContextRouter) => {
+                                // use {...props} to pass contextRouter to component
+                                return <MediaPlayer
+                                    {...props}
+                                    id={props.match.params.id}
+                                    type={props.match.params.type}
+                                    loading={this.state.loading}
+                                />
+                            }}/>
+                            {/*<Route path='/:type/:id' component={MediaPlayer}/>*/}
 
                             <Redirect from="*" to="/video"/>
                             {/* remove the Redirect to display the "not found" route */}
