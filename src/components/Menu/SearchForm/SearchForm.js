@@ -7,11 +7,11 @@ import './SearchForm.css'
 type Props = {
     placeholder: string,
     onSend: (value: string) => void
-};
+}
 
 type State = {
     inputValue: string
-};
+}
 
 
 /**
@@ -29,7 +29,7 @@ class SearchForm extends Component<Props, State> {
     }
 
     sendValue(event: Event) {
-        event.preventDefault();
+        event.preventDefault()
         this.props.onSend(this.state.inputValue)
     }
 

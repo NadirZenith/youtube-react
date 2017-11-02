@@ -9,11 +9,11 @@ import './VideoList.css'
 type Props = {
     videos: Array<Video>,
     loading: boolean
-};
+}
 
 const VideoList = function (props: Props) {
 
-    let loadingOrVideos;
+    let loadingOrVideos
 
     if (props.loading) {
         loadingOrVideos = <div>Loading...</div>

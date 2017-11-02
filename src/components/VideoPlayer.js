@@ -9,7 +9,7 @@ import './VideoDetail.css'
 
 type State = {
     video: Video
-};
+}
 
 class VideoPlayer extends Component<ContextRouter, State> {
 
@@ -44,8 +44,8 @@ class VideoPlayer extends Component<ContextRouter, State> {
                 }
             })
             .catch((error) => {
-                console.error(error);
-            });
+                console.error(error)
+            })
     }
 
     render() {

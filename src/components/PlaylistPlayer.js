@@ -6,11 +6,11 @@ import type {Video} from './types'
 import axios from 'axios'
 import apiKey from './../youtube-api-key.json'
 import './VideoDetail.css'
-import {YT_TYPE_PLAYLIST, YT_TYPE_VIDEO} from "../Config";
+import {YT_TYPE_PLAYLIST, YT_TYPE_VIDEO} from "../Config"
 
 type State = {
     video: Video
-};
+}
 
 class PlaylistPlayer extends Component<ContextRouter, State> {
 
@@ -46,8 +46,8 @@ class PlaylistPlayer extends Component<ContextRouter, State> {
                 }
             })
             .catch((error) => {
-                console.error(error);
-            });
+                console.error(error)
+            })
     }
 
     render() {

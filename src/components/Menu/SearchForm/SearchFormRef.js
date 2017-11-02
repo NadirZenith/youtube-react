@@ -9,7 +9,7 @@ import type {ContextRouter} from 'react-router-dom'
 type Props = {
     placeholder: string,
     onSend: (value: string) => void
-};
+}
 
 /**
  * Form with an <input> and a <button> that
@@ -48,7 +48,7 @@ class SearchFormRef extends Component<ContextRouter, Props> {
             // Store form using refs -- https://flow.org/en/docs/react/refs/
             <form className="search-form"
                   onSubmit={(event: Event) => {
-                      event.preventDefault();
+                      event.preventDefault()
                       this.sendValue()
                   }}
                   ref={form => this.form = form}>

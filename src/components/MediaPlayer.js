@@ -3,14 +3,14 @@
 import React, {Component} from 'react'
 import type {ContextRouter} from 'react-router-dom'
 import './VideoDetail.css'
-import {YT_TYPE_PLAYLIST, YT_TYPE_VIDEO} from "../Config";
-import VideoPlayer from "./VideoPlayer";
-import PlaylistPlayer from "./PlaylistPlayer";
-import ChannelPlayer from "./ChannelPlayer";
+import {YT_TYPE_PLAYLIST, YT_TYPE_VIDEO} from "../Config"
+import VideoPlayer from "./VideoPlayer"
+import PlaylistPlayer from "./PlaylistPlayer"
+import ChannelPlayer from "./ChannelPlayer"
 
 type State = {
     loading: boolean
-};
+}
 
 class MediaPlayer extends Component<ContextRouter, State> {
 
@@ -27,7 +27,7 @@ class MediaPlayer extends Component<ContextRouter, State> {
     }
 
     render() {
-        let player;
+        let player
 
         if (this.state.loading) {
             player = "loading data..."
