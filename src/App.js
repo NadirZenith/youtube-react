@@ -3,21 +3,16 @@
 import React, {Component} from 'react'
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import type {ContextRouter} from 'react-router-dom'
-import VideoList from './components/VideoList'
+import MediaList from './components/MediaList'
 import MediaPlayer from './components/MediaPlayer'
-import type {Video} from './components/types'
+import type {AppState} from './components/types'
 import MenuBar from './components/Menu/MenuBar'
 import axios from 'axios'
 import apiKey from './youtube-api-key.json'
 import {YT_TYPE_VIDEO} from './Config'
 
-type State = {
-    videos: Array<Video>,
-    loading: boolean,
-    filter: Object
-}
 
-class App extends Component<void, State> {
+class App extends Component<void, AppState> {
 
     constructor(props: void) {
         super(props)
@@ -29,6 +24,7 @@ class App extends Component<void, State> {
 
         this.nextPageToken = null
         this.searchTerm = ''
+        this.mediaType = YT_TYPE_VIDEO
 
         this.handleScroll = this.handleScroll.bind(this)
     }
@@ -36,25 +32,25 @@ class App extends Component<void, State> {
     handleScroll() {
         const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight
         const body = document.body
-        const html = document.documentElement;
+        const html = document.documentElement
         const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
-        const windowBottom = windowHeight + window.pageYOffset;
+        const windowBottom = windowHeight + window.pageYOffset
         if (windowBottom >= docHeight) {
-            this.searchMedias(YT_TYPE_VIDEO)
+            this.searchMedias()
         }
     }
 
     componentWillUnmount() {
-        window.removeEventListener("scroll", this.handleScroll);
+        window.removeEventListener("scroll", this.handleScroll)
     }
 
     componentDidMount() {
-        window.addEventListener("scroll", this.handleScroll);
-        this.searchMedias(YT_TYPE_VIDEO)
+        window.addEventListener("scroll", this.handleScroll)
+        this.searchMedias()
     }
 
     /** Searches videos using state.searchTerm */
-    searchMedias(type: string) {
+    searchMedias() {
 
         if (apiKey.indexOf("get your Youtube API key") >= 0) {
             alert("Put a Youtube API key in youtube-api-key.json")
@@ -63,7 +59,7 @@ class App extends Component<void, State> {
 
         const searchApi = "https://www.googleapis.com/youtube/v3/search"
         const queryTerm = encodeURIComponent(this.searchTerm)
-        var url = searchApi + "?q=" + queryTerm + "&key=" + apiKey + "&maxResults=50&part=snippet&order=date&type=" + type
+        var url = searchApi + "?q=" + queryTerm + "&key=" + apiKey + "&maxResults=12&part=snippet&order=date&type=" + this.mediaType
 
         if (this.nextPageToken) {
             url += "&pageToken=" + this.nextPageToken
@@ -71,7 +67,7 @@ class App extends Component<void, State> {
             this.setState({loading: true})
         }
 
-        console.log("Searching videos: " + this.searchTerm + " of type: " + type + " on url: " + url)
+        console.log('Searching medias\n with term: "' + (this.searchTerm || '-') + '"\n of type: ' + this.mediaType + '\n on url: ' + url)
 
         axios.get(url)
             .then((response) => {
@@ -82,7 +78,7 @@ class App extends Component<void, State> {
                             return {
                                 id: v.id.videoId || v.id.channelId || v.id.playlistId,
                                 title: v.snippet.title,
-                                type: type,
+                                type: this.mediaType,
                                 image: v.snippet.thumbnails ? (v.snippet.thumbnails.medium || v.snippet.thumbnails.default) : 'http://via.placeholder.com/120x90'
                             }
                         }
@@ -92,7 +88,7 @@ class App extends Component<void, State> {
                     videos = this.state.videos.concat(videos)
                 }
 
-                console.log(`Displaying ${videos.length} videos`)
+                console.log(`Rendering ${videos.length} medias`)
 
                 this.nextPageToken = response.data.nextPageToken
 
@@ -113,9 +109,11 @@ class App extends Component<void, State> {
 
                         <Route render={(props: ContextRouter) => (
                             <MenuBar
-                                onSearch={(value: string, type: string) => {
-                                    this.searchTerm = value
-                                    this.searchMedias(type)
+                                onSearch={(term: string, type: string) => {
+                                    this.nextPageToken = null
+                                    this.searchTerm = term
+                                    this.mediaType = type
+                                    this.searchMedias()
                                     props.history.push('/' + type)
                                 }}
                             />
@@ -124,7 +122,7 @@ class App extends Component<void, State> {
                         <Switch>
 
                             <Route exact path='/:type?' render={() => (
-                                <VideoList
+                                <MediaList
                                     videos={this.state.videos}
                                     loading={this.state.loading}
                                 />

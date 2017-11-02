@@ -18,17 +18,8 @@ type Props = {
  * This class uses refs to get the form fields (just aninput here)
  */
 class SearchFormRef extends Component<ContextRouter, Props> {
-// class SearchFormRef extends Component<Props, void> {
-// class VideoDetail extends Component<ContextRouter, State> {
 
     form: ?HTMLFormElement
-
-    constructor(props: ContextRouter) {
-    // constructor(props: Props) {
-        super(props)
-
-        // this.form = null // This is not necessary
-    }
 
     sendValue() {
         // https://flow.org/en/docs/types/maybe/

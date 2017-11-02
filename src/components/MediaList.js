@@ -11,7 +11,7 @@ type Props = {
     loading: boolean
 }
 
-const VideoList = function (props: Props) {
+const MediaList = function (props: Props) {
 
     let loadingOrVideos
 
@@ -34,4 +34,4 @@ const VideoList = function (props: Props) {
     )
 }
 
-export default VideoList
+export default MediaList
