@@ -24,14 +24,36 @@ class App extends Component<void, State> {
 
         this.state = {
             videos: [],
-            loading: false,
-            filter: {
-                searchTerm: ''
-            },
+            loading: false
+        }
+
+        this.nextPageToken = null;
+        this.currentTerm = null;
+
+        this.handleScroll = this.handleScroll.bind(this);
+    }
+
+    handleScroll() {
+        const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+        const body = document.body;
+        const html = document.documentElement;
+        const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+        const windowBottom = windowHeight + window.pageYOffset;
+        if (windowBottom >= docHeight) {
+            // alert('reach bottom');
+            this.searchMedias('', YT_TYPE_VIDEO)
+
+        } else {
+            console.log('not at bottom');
         }
     }
 
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this.handleScroll);
+    }
+
     componentDidMount() {
+        window.addEventListener("scroll", this.handleScroll);
         this.searchMedias('', YT_TYPE_VIDEO)
     }
 
@@ -46,12 +68,17 @@ class App extends Component<void, State> {
         // type = type.substring(0, type.indexOf("#")); // before char
         // type = type.substring(type.indexOf("#") + 1) // after char
 
-        console.log("Searching videos: " + searchTerm + " of type: " + type)
         this.setState({loading: true})
 
         const searchApi = "https://www.googleapis.com/youtube/v3/search"
         const queryTerm = encodeURIComponent(searchTerm)
-        const url = searchApi + "?q=" + queryTerm + "&key=" + apiKey + "&maxResults=50&part=snippet&order=date&type=" + type
+        var url = searchApi + "?q=" + queryTerm + "&key=" + apiKey + "&maxResults=50&part=snippet&order=date&type=" + type
+
+        if (this.nextPageToken) {
+            url += "&pageToken=" + this.nextPageToken
+        }
+
+        console.log("Searching videos: " + searchTerm + " of type: " + type + " on url: " + url)
 
         axios.get(url)
             .then((response) => {
@@ -68,9 +95,19 @@ class App extends Component<void, State> {
                         }
                     )
 
+                // if (this.nextPageToken) {
+                //     videos.merge(this.state.videos)
+                // }
+
+                // console.log(typeof videos)
+                // console.log(videos)
+                // console.log(videos[0])
+                videos.concat(videos)
                 console.log(`Displaying ${videos.length} videos`)
 
-                this.setState({videos: videos, loading: false, filter: {searchTerm: searchTerm}})
+                this.nextPageToken = response.data.nextPageToken
+
+                this.setState({videos: videos, loading: false})
 
             })
             .catch((error) => {
