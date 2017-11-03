@@ -11,6 +11,7 @@ import axios from 'axios'
 import apiKey from './youtube-api-key.json'
 import {YT_TYPE_VIDEO} from './Config'
 
+const autoloadThreshold = 70
 
 class App extends Component<void, AppState> {
 
@@ -25,17 +26,18 @@ class App extends Component<void, AppState> {
         this.nextPageToken = null
         this.searchTerm = ''
         this.mediaType = YT_TYPE_VIDEO
+        this.loading = false
 
-        this.handleScroll = this.handleScroll.bind(this)
+        this.handleScroll = this.handleScroll.bind(this, autoloadThreshold)
     }
 
-    handleScroll() {
+    handleScroll(threshold: integer) {
         const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight
         const body = document.body
         const html = document.documentElement
         const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
         const windowBottom = windowHeight + window.pageYOffset
-        if (windowBottom >= docHeight) {
+        if (((windowBottom + threshold) >= docHeight) && !this.loading) {
             this.searchMedias()
         }
     }
@@ -61,10 +63,11 @@ class App extends Component<void, AppState> {
         const queryTerm = encodeURIComponent(this.searchTerm)
         var url = searchApi + "?q=" + queryTerm + "&key=" + apiKey + "&maxResults=12&part=snippet&order=date&type=" + this.mediaType
 
+        this.loading = true
         if (this.nextPageToken) {
             url += "&pageToken=" + this.nextPageToken
         } else {
-            this.setState({loading: true})
+            this.setState({loading: this.loading})
         }
 
         console.log('Searching medias\n with term: "' + (this.searchTerm || '-') + '"\n of type: ' + this.mediaType + '\n on url: ' + url)
@@ -92,7 +95,8 @@ class App extends Component<void, AppState> {
 
                 this.nextPageToken = response.data.nextPageToken
 
-                this.setState({videos: videos, loading: false})
+                this.loading = false
+                this.setState({videos: videos, loading: this.loading})
 
             })
             .catch((error) => {
