@@ -8,7 +8,7 @@ import apiKey from './../youtube-api-key.json'
 import './VideoDetail.css'
 
 type State = {
-    video: Video
+    playlist: Video
 }
 
 class PlaylistPlayer extends Component<ContextRouter, State> {
@@ -17,17 +17,17 @@ class PlaylistPlayer extends Component<ContextRouter, State> {
         super(props)
 
         this.state = {
-            video: null,
+            playlist: null,
         }
 
         this.loadPlaylist(props.id)
 
     }
 
-    loadPlaylist(videoId: string) {
+    loadPlaylist(playlistId: string) {
 
-        let videosApi = "https://www.googleapis.com/youtube/v3/playlists"
-        let url = videosApi + "?id=" + videoId + "&part=snippet&key=" + apiKey
+        let playlistApi = "https://www.googleapis.com/youtube/v3/playlists"
+        let url = playlistApi + "?id=" + playlistId + "&part=snippet&key=" + apiKey
 
         axios.get(url)
             .then((response) => {
@@ -35,13 +35,14 @@ class PlaylistPlayer extends Component<ContextRouter, State> {
                 const items = response.data.items
                 if (items.length > 0) {
                     const v = items[0]
-                    const video = {
+                    const playlist = {
                         id: v.id,
                         title: v.snippet.title,
                         description: v.snippet.description,
                         image: v.snippet.thumbnails.medium
                     }
-                    this.setState({video: video})
+                    this.setState({playlist: playlist})
+                    this.props.onLoad(playlist)
                 }
             })
             .catch((error) => {
@@ -51,17 +52,17 @@ class PlaylistPlayer extends Component<ContextRouter, State> {
 
     render() {
 
-        if(!this.state.video){
+        if(!this.state.playlist){
             return null
         }
 
         return (
             <div>
-                <iframe title="video" src={`https://www.youtube.com/embed/?listType=playlist&list=` + this.state.video.id}
+                <iframe title="video" src={`https://www.youtube.com/embed/?listType=playlist&list=` + this.state.playlist.id}
                         frameBorder="0" allowFullScreen/>
 
-                <h2>{this.state.video.title}</h2>
-                <p dangerouslySetInnerHTML={{__html: linkify(this.state.video.description)}}/>
+                <h2>{this.state.playlist.title}</h2>
+                <p dangerouslySetInnerHTML={{__html: linkify(this.state.playlist.description)}}/>
             </div>
         )
     }

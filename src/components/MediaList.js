@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom'
 import VideoItem from './VideoItem'
 import type {Video} from './types'
 import './VideoList.css'
+import { Helmet } from 'react-helmet'
 
 type Props = {
     videos: Array<Video>,
@@ -30,7 +31,12 @@ const MediaList = function (props: Props) {
     }
 
     return (
-        <div className="video-list">{loadingOrVideos}</div>
+        <div>
+            <Helmet>
+                <title>Youtube - {props.type}</title>
+            </Helmet>
+            <div className="video-list">{loadingOrVideos}</div>
+        </div>
     )
 }
 

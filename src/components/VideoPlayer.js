@@ -41,6 +41,7 @@ class VideoPlayer extends Component<ContextRouter, State> {
                         image: v.snippet.thumbnails.medium
                     }
                     this.setState({video: video})
+                    this.props.onLoad(video)
                 }
             })
             .catch((error) => {
@@ -56,6 +57,9 @@ class VideoPlayer extends Component<ContextRouter, State> {
 
         return (
             <div>
+                {/*<Helmet>*/}
+                    {/*<title>Youtube - {this.state.video.title} - {}</title>*/}
+                {/*</Helmet>*/}
                 <iframe title="video" src={`https://www.youtube.com/embed/` + this.state.video.id}
                         frameBorder="0" allowFullScreen/>
 

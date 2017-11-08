@@ -70,7 +70,7 @@ class App extends Component<void, AppState> {
             this.setState({loading: this.loading})
         }
 
-        console.log('Searching medias\n with term: "' + (this.searchTerm || '-') + '"\n of type: ' + this.mediaType + '\n on url: ' + url)
+        console.log('Searching medias\n with term: "' + (this.searchTerm || 'n/a') + '"\n of type: ' + this.mediaType + '\n on url: ' + url)
 
         axios.get(url)
             .then((response) => {
@@ -128,6 +128,7 @@ class App extends Component<void, AppState> {
                             <Route exact path='/:type?' render={() => (
                                 <MediaList
                                     videos={this.state.videos}
+                                    type={this.mediaType}
                                     loading={this.state.loading}
                                 />
                             )}/>

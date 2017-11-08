@@ -5,10 +5,9 @@ import './SearchForm.css'
 import {YT_TYPE_VIDEO, YT_TYPE_CHANNEL, YT_TYPE_PLAYLIST} from './../../../Config'
 import type {ContextRouter} from 'react-router-dom'
 
-
 type Props = {
     placeholder: string,
-    onSend: (value: string) => void
+    onSend: (value: string, mediaType: string) => void
 }
 
 /**
@@ -26,9 +25,9 @@ class SearchFormRef extends Component<ContextRouter, Props> {
         // I could use (this.form != null) but ESLint complains
         if (this.form instanceof HTMLFormElement) {
             const input = this.form.querySelector("[name=text]")
-            const videoType = this.form.querySelector("[name=filter_video_type]:checked")
+            const mediaType = this.form.querySelector("[name=filter_media_type]:checked")
             if (input instanceof HTMLInputElement) {
-                this.props.onSend(input.value, videoType.value)
+                this.props.onSend(input.value, mediaType.value)
             }
         }
     }
@@ -44,20 +43,20 @@ class SearchFormRef extends Component<ContextRouter, Props> {
                   }}
                   ref={form => this.form = form}>
                 <input name="text" placeholder={this.props.placeholder}/>
-                <div className="filter_video_type">
+                <div className="filter_media_type">
                     <label>
-                        <input type="radio" name="filter_video_type" value={YT_TYPE_VIDEO}
+                        <input type="radio" name="filter_media_type" value={YT_TYPE_VIDEO}
                                onChange={(e: Event) => this.sendValue()}
                                defaultChecked
                         />video
                     </label><br/>
                     <label>
-                        <input type="radio" name="filter_video_type" value={YT_TYPE_PLAYLIST}
+                        <input type="radio" name="filter_media_type" value={YT_TYPE_PLAYLIST}
                                onChange={(e: Event) => this.sendValue()}
                         />playlists
                     </label><br/>
                     <label>
-                        <input type="radio" name="filter_video_type" value={YT_TYPE_CHANNEL}
+                        <input type="radio" name="filter_media_type" value={YT_TYPE_CHANNEL}
                                onChange={(e: Event) => this.sendValue()}
                         />channel
                     </label>

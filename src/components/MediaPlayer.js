@@ -7,6 +7,8 @@ import {YT_TYPE_PLAYLIST, YT_TYPE_VIDEO} from "../Config"
 import VideoPlayer from "./VideoPlayer"
 import PlaylistPlayer from "./PlaylistPlayer"
 import ChannelPlayer from "./ChannelPlayer"
+import { Helmet } from 'react-helmet'
+import type {Video} from './types'
 
 type State = {
     loading: boolean
@@ -18,7 +20,8 @@ class MediaPlayer extends Component<ContextRouter, State> {
         super(props)
 
         this.state = {
-            loading: true
+            loading: true,
+            title: ''
         }
     }
 
@@ -34,21 +37,28 @@ class MediaPlayer extends Component<ContextRouter, State> {
         } else {
 
             if (this.props.type === YT_TYPE_VIDEO) {
-                player = ( <VideoPlayer id={this.props.id}/> )
+                player = ( <VideoPlayer id={this.props.id} onLoad={(video: Video) => {
+                    this.setState({title: video.title})
+                }}/> )
 
             } else if (this.props.type === YT_TYPE_PLAYLIST) {
-                player = ( <PlaylistPlayer id={this.props.id}/> )
+                player = ( <PlaylistPlayer id={this.props.id} onLoad={(playlist) => {
+                    this.setState({title: playlist.title})
+                }}/> )
 
             } else {
-                // console.log('implementing')
-                // return null
-                player = ( <ChannelPlayer id={this.props.id}/> )
+                player = ( <ChannelPlayer id={this.props.id}  onLoad={(channel) => {
+                    this.setState({title: channel.title})
+                }}/> )
 
             }
         }
 
         return (
             <div className="media-detail">
+                <Helmet>
+                    <title>Youtube - {this.state.title}</title>
+                </Helmet>
                 <a href="" onClick={this.props.history.goBack}>&larr; Go Back</a>
                 {player}
             </div>
